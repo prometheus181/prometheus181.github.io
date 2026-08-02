@@ -2,17 +2,15 @@ const SIZE = 4;
 
 const START_TILES = 2;
 
-const boardEl = document.getElementById("board");
+const CELL_W = 6;
+
+const screenEl = document.getElementById("screen");
 
 const scoreEl = document.getElementById("score");
 
 const bestEl = document.getElementById("best");
 
-const overlay = document.getElementById("overlay");
-
-const overlayTitle = document.getElementById("overlay-title");
-
-const overlayBody = document.getElementById("overlay-body");
+const msgEl = document.getElementById("msg");
 
 const startBtn = document.getElementById("start");
 
@@ -45,8 +43,7 @@ function spawn() {
   const [r, c] = free[Math.floor(Math.random() * free.length)];
   grid[r][c] = {
     id: ++uid,
-    value: Math.random() < .9 ? 2 : 4,
-    born: true
+    value: Math.random() < .9 ? 2 : 4
   };
 }
 
@@ -58,7 +55,8 @@ function reset() {
   running = true;
   for (let i = 0; i < START_TILES; i++) spawn();
   scoreEl.textContent = "0";
-  overlay.hidden = true;
+  msgEl.textContent = "arrows or wasd. equal numbers merge.";
+  startBtn.textContent = "> restart";
   render();
 }
 
@@ -71,8 +69,7 @@ function collapse(line) {
       const value = tiles[i].value * 2;
       out.push({
         id: tiles[i].id,
-        value: value,
-        merged: true
+        value: value
       });
       gained += value;
       if (value === 2048) reachedGoal = true;
@@ -139,46 +136,39 @@ function hasMoves() {
   return false;
 }
 
-function finish(title, body) {
+function finish(text) {
   running = false;
   if (score > best) {
     best = score;
     localStorage.setItem(BEST_KEY, String(best));
     bestEl.textContent = best;
   }
-  overlayTitle.textContent = title;
-  overlayBody.textContent = body;
-  startBtn.textContent = "Again";
-  overlay.hidden = false;
+  msgEl.textContent = text;
+  startBtn.textContent = "> again";
 }
 
 function win() {
-  finish("Final form.", `You assembled the last Kenneth. ${score} points.`);
+  finish(`final form. ${score} points.`);
 }
 
 function lose() {
-  finish("Stuck.", `No moves left. ${score} points.`);
+  finish(`stuck. no moves left, ${score} points.`);
+}
+
+function centre(s, w) {
+  const left = Math.floor((w - s.length) / 2);
+  return " ".repeat(left) + s + " ".repeat(w - s.length - left);
 }
 
 function render() {
-  boardEl.querySelectorAll(".tile").forEach(el => el.remove());
+  const rule = "+" + Array(SIZE).fill("-".repeat(CELL_W)).join("+") + "+";
+  const empty = "|" + Array(SIZE).fill(" ".repeat(CELL_W)).join("|") + "|";
+  const lines = [ rule ];
   for (let r = 0; r < SIZE; r++) {
-    for (let c = 0; c < SIZE; c++) {
-      const t = grid[r][c];
-      if (!t) continue;
-      const el = document.createElement("div");
-      el.className = "tile";
-      if (t.born) el.classList.add("is-new");
-      if (t.merged) el.classList.add("is-merged");
-      el.style.setProperty("--row", r);
-      el.style.setProperty("--col", c);
-      el.style.backgroundImage = `url(../assets/faces/tile-${t.value}.png)`;
-      el.innerHTML = `<span>${t.value}</span>`;
-      boardEl.appendChild(el);
-      delete t.born;
-      delete t.merged;
-    }
+    const mid = "|" + grid[r].map(t => centre(t ? String(t.value) : "", CELL_W)).join("|") + "|";
+    lines.push(empty, mid, empty, rule);
   }
+  screenEl.textContent = lines.join("\n");
 }
 
 const KEYS = {
@@ -198,13 +188,17 @@ window.addEventListener("keydown", e => {
     e.preventDefault();
     move(dir);
   }
+  if (e.key === " " && !running) {
+    e.preventDefault();
+    reset();
+  }
 });
 
 startBtn.addEventListener("click", reset);
 
 let touch = null;
 
-boardEl.addEventListener("touchstart", e => {
+screenEl.addEventListener("touchstart", e => {
   touch = {
     x: e.touches[0].clientX,
     y: e.touches[0].clientY
@@ -213,7 +207,7 @@ boardEl.addEventListener("touchstart", e => {
   passive: true
 });
 
-boardEl.addEventListener("touchend", e => {
+screenEl.addEventListener("touchend", e => {
   if (!touch) return;
   const dx = e.changedTouches[0].clientX - touch.x;
   const dy = e.changedTouches[0].clientY - touch.y;
@@ -225,11 +219,3 @@ boardEl.addEventListener("touchend", e => {
 });
 
 reset();
-
-overlay.hidden = false;
-
-overlayTitle.textContent = "2048";
-
-overlayBody.textContent = "Merge matching Kenneths. He gets worse.";
-
-startBtn.textContent = "Play";

@@ -27,10 +27,13 @@ const CSS = ['css/site.css', 'css/tokens.css', 'css/game.css'];
 const HTML = ['index.html', 'amoeba.html', 'arcade.html', 'contact.html',
   'games/2048.html', 'games/snake.html', 'games/flappy.html'];
 
-// Files whose bytes decide the cache tag: everything the landing page
-// loads. js/ascii-face-data.js is generated and has no source in src/.
+// Files whose bytes decide the cache tag: everything any page loads, so
+// one hash busts the whole site at once and a page can never pair new
+// markup with a stale script. js/ascii-face-data.js is generated and has
+// no source in src/.
 const TAGGED = ['js/ascii-face-data.js', 'js/ascii-face.js', 'js/splash.js',
-  'js/cursor.js', 'js/intro.js', 'js/term-nav.js', 'css/site.css'];
+  'js/cursor.js', 'js/intro.js', 'js/term-nav.js', 'css/site.css',
+  'css/tokens.css', 'css/game.css', 'js/snake.js', 'js/flappy.js', 'js/2048.js'];
 
 const sha1 = (buf) => createHash('sha1').update(buf).digest('hex');
 

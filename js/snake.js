@@ -1,34 +1,26 @@
-const CELL = 24;
-
 const COLS = 20;
 
 const ROWS = 20;
 
 const SPEED_MS = 110;
 
-const canvas = document.getElementById("game");
+const EMPTY = "  ";
 
-const ctx = canvas.getContext("2d");
+const BODY = "oo";
 
-canvas.width = COLS * CELL;
+const HEAD = "@@";
 
-canvas.height = ROWS * CELL;
+const FOOD = "YC";
+
+const screenEl = document.getElementById("screen");
 
 const scoreEl = document.getElementById("score");
 
 const bestEl = document.getElementById("best");
 
-const overlay = document.getElementById("overlay");
-
-const overlayTitle = document.getElementById("overlay-title");
-
-const overlayBody = document.getElementById("overlay-body");
+const msgEl = document.getElementById("msg");
 
 const startBtn = document.getElementById("start");
-
-const head = new Image;
-
-head.src = "../assets/faces/snake-head.png";
 
 const BEST_KEY = "ken-snake-best";
 
@@ -101,78 +93,23 @@ function die() {
     localStorage.setItem(BEST_KEY, String(best));
     bestEl.textContent = best;
   }
-  overlayTitle.textContent = score >= 10 ? "Devoured." : "Rejected.";
-  overlayBody.textContent = score === 0 ? "Zero batches consumed. Brutal." : `You ate ${score} startup accelerator${score === 1 ? "" : "s"}.`;
-  startBtn.textContent = "Again";
-  overlay.hidden = false;
+  msgEl.textContent = score === 0 ? "rejected. zero batches consumed." : `devoured ${score} accelerator${score === 1 ? "" : "s"}.`;
+  startBtn.textContent = "> again";
+  render();
 }
 
-function drawGrid() {
-  ctx.fillStyle = "#14141c";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.strokeStyle = "rgba(255,255,255,0.035)";
-  ctx.lineWidth = 1;
-  for (let i = 1; i < COLS; i++) {
-    ctx.beginPath();
-    ctx.moveTo(i * CELL + .5, 0);
-    ctx.lineTo(i * CELL + .5, canvas.height);
-    ctx.stroke();
-  }
-  for (let i = 1; i < ROWS; i++) {
-    ctx.beginPath();
-    ctx.moveTo(0, i * CELL + .5);
-    ctx.lineTo(canvas.width, i * CELL + .5);
-    ctx.stroke();
-  }
-}
-
-function drawYC(cx, cy, size) {
-  const r = size / 2;
-  ctx.save();
-  ctx.translate(cx, cy);
-  ctx.fillStyle = "#ff6600";
-  ctx.beginPath();
-  ctx.roundRect(-r, -r, size, size, size * .16);
-  ctx.fill();
-  ctx.strokeStyle = "#ffffff";
-  ctx.lineWidth = Math.max(2, size * .11);
-  ctx.lineCap = "round";
-  ctx.lineJoin = "round";
-  const top = -r * .44;
-  const mid = r * .02;
-  const bot = r * .5;
-  ctx.beginPath();
-  ctx.moveTo(-r * .34, top);
-  ctx.lineTo(0, mid);
-  ctx.lineTo(r * .34, top);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.moveTo(0, mid);
-  ctx.lineTo(0, bot);
-  ctx.stroke();
-  ctx.restore();
-}
-
-function draw() {
-  drawGrid();
-  drawYC(food.x * CELL + CELL / 2, food.y * CELL + CELL / 2, CELL * .78);
-  for (let i = snake.length - 1; i > 0; i--) {
-    const s = snake[i];
-    const t = 1 - i / snake.length;
-    ctx.fillStyle = `rgba(79, 195, 247, ${.35 + t * .5})`;
-    ctx.beginPath();
-    ctx.roundRect(s.x * CELL + 2, s.y * CELL + 2, CELL - 4, CELL - 4, 6);
-    ctx.fill();
-  }
-  const h = snake[0];
-  if (head.complete && head.naturalWidth) {
-    ctx.drawImage(head, h.x * CELL - 3, h.y * CELL - 3, CELL + 6, CELL + 6);
-  } else {
-    ctx.fillStyle = "#4fc3f7";
-    ctx.beginPath();
-    ctx.arc(h.x * CELL + CELL / 2, h.y * CELL + CELL / 2, CELL / 2 - 1, 0, Math.PI * 2);
-    ctx.fill();
-  }
+function render() {
+  const rule = "+" + "-".repeat(COLS * 2) + "+";
+  const cells = Array.from({
+    length: ROWS
+  }, () => Array(COLS).fill(EMPTY));
+  cells[food.y][food.x] = FOOD;
+  for (let i = snake.length - 1; i > 0; i--) cells[snake[i].y][snake[i].x] = BODY;
+  cells[snake[0].y][snake[0].x] = HEAD;
+  const lines = [ rule ];
+  for (let y = 0; y < ROWS; y++) lines.push("|" + cells[y].join("") + "|");
+  lines.push(rule);
+  screenEl.innerHTML = lines.join("\n").replace(FOOD, `<span class="f">${FOOD}</span>`).replace(HEAD, `<span class="h">${HEAD}</span>`);
 }
 
 function frame(ts) {
@@ -180,18 +117,24 @@ function frame(ts) {
   if (!last) last = ts;
   acc += ts - last;
   last = ts;
+  let stepped = false;
   while (acc >= SPEED_MS) {
     acc -= SPEED_MS;
-    if (alive) step();
+    if (alive) {
+      step();
+      stepped = true;
+    }
   }
-  draw();
+  if (stepped && running) render();
   if (running) requestAnimationFrame(frame);
 }
 
 function start() {
   reset();
-  overlay.hidden = true;
+  msgEl.textContent = "eat the YC. do not eat yourself.";
+  startBtn.textContent = "> restart";
   running = true;
+  render();
   requestAnimationFrame(frame);
 }
 
@@ -251,7 +194,7 @@ startBtn.addEventListener("click", start);
 
 let touchStart = null;
 
-canvas.addEventListener("touchstart", e => {
+screenEl.addEventListener("touchstart", e => {
   touchStart = {
     x: e.touches[0].clientX,
     y: e.touches[0].clientY
@@ -260,7 +203,7 @@ canvas.addEventListener("touchstart", e => {
   passive: true
 });
 
-canvas.addEventListener("touchend", e => {
+screenEl.addEventListener("touchend", e => {
   if (!touchStart || !running) return;
   const dx = e.changedTouches[0].clientX - touchStart.x;
   const dy = e.changedTouches[0].clientY - touchStart.y;
@@ -279,4 +222,4 @@ canvas.addEventListener("touchend", e => {
 
 reset();
 
-draw();
+render();

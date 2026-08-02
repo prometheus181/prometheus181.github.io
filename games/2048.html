@@ -4,117 +4,24 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>2048 — Kenneth Lee</title>
-  <link rel="stylesheet" href="../css/tokens.css">
-  <link rel="stylesheet" href="../css/game.css">
-  <style>    #board {
-      --gap: 10px;
-      --cell: 104px;
-      position: relative;
-      width: calc(var(--cell) * 4 + var(--gap) * 5);
-      height: calc(var(--cell) * 4 + var(--gap) * 5);
-      background: var(--surface-2);
-      border-radius: var(--radius);
-      padding: var(--gap);
-    }
-
-    @media (max-width: 520px) {
-      #board { --cell: 70px; --gap: 8px; }
-    }
-
-    .cell {
-      position: absolute;
-      width: var(--cell);
-      height: var(--cell);
-      border-radius: var(--radius-sm);
-      background: rgb(255 255 255 / 0.035);
-    }
-
-    .tile {
-      position: absolute;
-      width: var(--cell);
-      height: var(--cell);
-      border-radius: var(--radius-sm);
-      background-size: cover;
-      background-position: center;
-      box-shadow: 0 4px 14px rgb(0 0 0 / 0.4);
-      transform: translate(
-        calc(var(--gap) + var(--col) * (var(--cell) + var(--gap))),
-        calc(var(--gap) + var(--row) * (var(--cell) + var(--gap)))
-      );
-      transition: transform 0.13s ease-out;
-    }
-
-    .tile span {
-      position: absolute;
-      left: 5px;
-      bottom: 4px;
-      font-family: var(--mono);
-      font-size: 12px;
-      font-weight: 700;
-      color: #fff;
-      text-shadow: 0 1px 3px rgb(0 0 0 / 0.9);
-      pointer-events: none;
-    }
-
-    .tile.is-new { animation: pop 0.16s ease-out; }
-    .tile.is-merged { animation: bump 0.16s ease-out; }
-
-    @keyframes pop {
-      from { opacity: 0; scale: 0.6; }
-      to   { opacity: 1; scale: 1; }
-    }
-
-    @keyframes bump {
-      0%   { scale: 1; }
-      55%  { scale: 1.14; }
-      100% { scale: 1; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .tile { transition: none; }
-      .tile.is-new, .tile.is-merged { animation: none; }
-    }
-</style>
+  <link rel="stylesheet" href="../css/tokens.css?v=bac74b78">
+  <link rel="stylesheet" href="../css/game.css?v=bac74b78">
 </head>
 <body>
   <main class="game-page">
-    <nav class="game-nav">
-      <a href="flappy.html">← Flappy</a>
-      <a href="../index.html">Home →</a>
-    </nav>
-
-    <h1 class="game-title">2048</h1>
-    <p class="game-sub">Every merge makes him worse. The last one is not okay.</p>
-
-    <div class="scorebar">
-      <span>Score <strong id="score">0</strong></span>
-      <span style="text-align:right">Best <strong id="best">0</strong></span>
+    <div class="gwrap">
+      <div class="gline dim">&gt; 2048</div>
+      <div class="gline"></div>
+      <pre id="screen" class="screen"></pre>
+      <div class="gline"></div>
+      <div class="gline">score <span id="score">0</span>   best <span id="best">0</span></div>
+      <div class="gline dim" id="msg">slide the board. equal numbers merge.</div>
+      <div class="gline"><button class="tbtn" id="start">&gt; play</button></div>
+      <div class="gline"></div>
+      <div class="gline dim gnav">&gt; <a href="../arcade.html">arcade/</a>  <a href="snake.html">snake/</a>  <a href="../index.html">home/</a> <span class="term-caret">█</span></div>
     </div>
-
-    <div class="stage">
-      <div id="board"></div>
-      <div class="overlay" id="overlay">
-        <h2 id="overlay-title">2048</h2>
-        <p id="overlay-body">Merge matching Kenneths.</p>
-        <button class="btn" id="start">Play</button>
-      </div>
-    </div>
-
-    <p class="hint"><kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd> or <kbd>WASD</kbd> · swipe on mobile</p>
   </main>
 
-  <script>
-    const board = document.getElementById("board");
-
-    for (let r = 0; r < 4; r++) {
-      for (let c = 0; c < 4; c++) {
-        const cell = document.createElement("div");
-        cell.className = "cell";
-        cell.style.transform = `translate(calc(var(--gap) + ${c} * (var(--cell) + var(--gap))),` + ` calc(var(--gap) + ${r} * (var(--cell) + var(--gap))))`;
-        board.appendChild(cell);
-      }
-    }
-  </script>
-  <script src="../js/2048.js"></script>
+  <script src="../js/2048.js?v=bac74b78"></script>
 </body>
 </html>
