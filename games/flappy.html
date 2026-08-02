@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Flappy — Kenneth Lee</title>
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/game.css">
+</head>
+<body>
+  <main class="game-page">
+    <nav class="game-nav">
+      <a href="snake.html">← Snake</a>
+      <a href="2048.html">2048 →</a>
+    </nav>
+
+    <h1 class="game-title">Flappy</h1>
+    <p class="game-sub">One button. No skill ceiling. No skill floor either.</p>
+
+    <div class="scorebar">
+      <span>Pipes <strong id="score">0</strong></span>
+      <span style="text-align:right">Best <strong id="best">0</strong></span>
+    </div>
+
+    <div class="stage">
+      <canvas id="game" width="400" height="600"></canvas>
+      <div class="overlay" id="overlay">
+        <h2 id="overlay-title">Flappy</h2>
+        <p id="overlay-body">Tap or press space to flap. That's the whole game.</p>
+        <button class="btn" id="start">Play</button>
+      </div>
+    </div>
+
+    <p class="hint"><kbd>space</kbd> or tap · <a href="../index.html" style="color:var(--muted)">back home</a></p>
+  </main>
+
+  <script src="../js/flappy.js"></script>
+</body>
+</html>

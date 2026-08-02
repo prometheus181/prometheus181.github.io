@@ -1,0 +1,9 @@
+.DS_Store
+__pycache__/
+*.pyc
+.ascii-models/
+
+# Working sources (annotated). Local only — the served files at the
+# repo root are generated from these by tools/build.mjs.
+src/
+tools/.build-manifest.json

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Snake — Kenneth Lee</title>
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/game.css">
+</head>
+<body>
+  <main class="game-page">
+    <nav class="game-nav">
+      <a href="../index.html">← Back</a>
+      <a href="flappy.html">Flappy →</a>
+    </nav>
+
+    <h1 class="game-title">Snake</h1>
+    <p class="game-sub">Consume Y Combinator. One batch at a time.</p>
+
+    <div class="scorebar">
+      <span>Eaten <strong id="score">0</strong></span>
+      <span style="text-align:right">Best <strong id="best">0</strong></span>
+    </div>
+
+    <div class="stage">
+      <canvas id="game" width="480" height="480"></canvas>
+      <div class="overlay" id="overlay">
+        <h2 id="overlay-title">Snake</h2>
+        <p id="overlay-body">Eat the orange squares. Don't eat yourself.</p>
+        <button class="btn" id="start">Play</button>
+      </div>
+    </div>
+
+    <p class="hint"><kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd> or <kbd>WASD</kbd> · swipe on mobile</p>
+  </main>
+
+  <script src="../js/snake.js"></script>
+</body>
+</html>
