@@ -46,8 +46,6 @@
   }
   function cleanup() {
     document.documentElement.classList.remove("intro-pending");
-    window.__faceHold = false;
-    if (window.__faceWake) window.__faceWake();
     const rows = face.children;
     for (let r = 0; r < rows.length; r++) rows[r].style.visibility = "";
     overlay.remove();
