@@ -17,8 +17,6 @@
 }
 
 .splash-inner {
-  position: relative;
-  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -33,6 +31,7 @@
 
 .spin-stack {
   position: relative;
+  transition: transform 0.35s ease;
 }
 
 .spin-copy {
@@ -44,17 +43,15 @@
   inset: 0;
 }
 
-.spin-stack video + video,
 .spin-copy video + video {
   position: absolute;
   inset: 0;
   height: 100%;
   opacity: 0;
-
   mix-blend-mode: screen;
 }
 
-.press-start {
+.enter {
   font-family: var(--mono);
   font-size: 12px;
   line-height: 14px;
@@ -63,15 +60,11 @@
   user-select: none;
 }
 
-.press-start .tap { display: none; }
+.enter .tap { display: none; }
 
 @media (hover: none) {
-  .press-start .click { display: none; }
-  .press-start .tap { display: inline; }
-}
-
-.spin-stack {
-  transition: transform 0.35s ease;
+  .enter .click { display: none; }
+  .enter .tap { display: inline; }
 }
 
 .spin-stack:hover {
@@ -87,7 +80,6 @@
   display: grid;
   place-items: center;
   align-content: center;
-  gap: 26px;
   padding: 24px 0;
 }
 
@@ -111,13 +103,6 @@
   white-space: pre;
 }
 
-#ascii-face.white .arow {
-  width: fit-content;
-  background: var(--text);
-  background-clip: content-box;
-  color: transparent;
-}
-
 .face-frame {
   display: grid;
   place-items: center;
@@ -137,16 +122,6 @@
 
   #ascii-face .arow {
     min-height: 7px;
-  }
-}
-
-section {
-  padding: 96px 0;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #splash {
-    transition: none;
   }
 }
 
@@ -296,7 +271,6 @@ html {
 .term {
   padding: 16vh 8vw 8vh;
   font-family: var(--mono);
-
   font-size: 10px;
   line-height: 12px;
   color: var(--text);
@@ -339,7 +313,7 @@ html {
   line-height: 16px;
   cursor: pointer;
   list-style: none;
-  white-space: pre;
+  white-space: pre-wrap;
 }
 
 .vid summary::-webkit-details-marker {
@@ -392,12 +366,19 @@ html {
   }
 
   .cnav,
-  .press-start {
+  .enter {
     font-size: 8.5px;
     line-height: 10px;
   }
 
   .term .tline.sp {
     height: 8.4px;
-  }}
+  }
+
+  .vid summary {
+    padding: 10px 12px;
+    font-size: 10px;
+    line-height: 12px;
+  }
+}
 
