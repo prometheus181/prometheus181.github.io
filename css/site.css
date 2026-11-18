@@ -316,6 +316,26 @@ html {
   white-space: pre-wrap;
 }
 
+.vid .btn {
+  display: block;
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid var(--text);
+  background: none;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 16px;
+  text-align: left;
+  white-space: pre;
+  cursor: pointer;
+}
+
+.vid .btn:hover {
+  background: var(--text);
+  color: #000;
+}
+
 .vid summary::-webkit-details-marker {
   display: none;
 }
@@ -324,12 +344,12 @@ html {
   content: "[+]  ";
 }
 
-.vid[open] summary::before {
+.vid[open] > summary::before {
   content: "[-]  ";
 }
 
 .vid summary:hover,
-.vid[open] summary {
+.vid[open] > summary {
   background: var(--text);
   color: #000;
 }
@@ -375,7 +395,8 @@ html {
     height: 8.4px;
   }
 
-  .vid summary {
+  .vid summary,
+  .vid .btn {
     padding: 10px 12px;
     font-size: 10px;
     line-height: 12px;
